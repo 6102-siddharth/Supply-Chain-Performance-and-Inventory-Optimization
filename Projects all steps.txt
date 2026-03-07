@@ -1,0 +1,156 @@
+Project: Supply Chain Performance & Inventory Optimization Dashboard
+
+Project Understanding (VERY IMPORTANT)
+Objective
+You need to analyze:
+Inventory turnover
+Shipment delays
+Warehouse utilization
+
+Revenue performance
+Final output: Interactive Power BI Dashboard
+
+Load Data into Power BI:
+Step 1: Open Power BI
+Open Power BI Desktop
+Click Get Data
+Choose Text/CSV
+
+Step 2: Import All Files
+Import these three files one by one:
+orders_dataset.csv
+shipments_dataset.csv
+inventory_dataset.csv
+Click Transform Data (IMPORTANT — opens Power Query)
+
+Data Cleaning in Power Query (BEGINNER LEVEL):
+For each table:
+Orders table
+Set:
+OrderDate → Date
+OrderQty → Whole Number
+UnitPrice → Decimal
+OrderAmount → Decimal
+How:
+Home → Data Type → select correct type
+
+Shipments table
+Set:
+ShipmentDate → Date
+DeliveryDate → Date
+DelayDays → Whole Number
+
+Inventory table
+Set:
+StockOnHand → Whole Number
+ReorderLevel → Whole Number
+LastUpdated → Date
+
+Remove Errors / Nulls
+Home → Remove Rows → Remove Blank Rows
+
+Create Calculated Column (Important)
+Add Column → Custom Column
+Formula:
+if [DelayDays] = 0 then "On Time" else "Delayed"
+Name: DeliveryStatus
+Very important KPI column
+
+Close & Apply
+
+Create Data Model (RELATIONSHIPS):
+
+Open Model View
+Left side → click Model icon
+
+Create Relationships
+Drag and drop:
+
+Relationship 1
+Orders[OrderID] → Shipments[OrderID]
+Cardinality: One to Many
+
+Relationship 2
+Orders[ProductID] → Inventory[ProductID]
+
+Relationship 3
+Shipments[WarehouseID] → Inventory[WarehouseID]
+
+Create DAX Measures (VERY IMPORTANT 🔥)
+
+Go to Modeling → New Measure
+
+Total Revenue
+Total Revenue = SUM(Orders[OrderAmount])
+Total Orders
+Total Orders = COUNT(Orders[OrderID])
+
+On-Time Delivery %
+OnTime % =
+DIVIDE(
+    CALCULATE(COUNT(Shipments[OrderID]),
+        Shipments[DeliveryStatus] = "On Time"
+    ),
+    COUNT(Shipments[OrderID])
+)
+
+Average Delay
+Avg Delay = AVERAGE(Shipments[DelayDays])
+
+Inventory Turnover (Important for Interview)
+
+Inventory Turnover =
+DIVIDE(
+    SUM(Orders[OrderQty]),
+    SUM(Inventory[StockOnHand])
+)
+
+Low Stock Flag
+Create calculated column in Inventory:
+StockStatus =
+IF(
+    Inventory[StockOnHand] < Inventory[ReorderLevel],
+    "Low Stock",
+    "Sufficient"
+)
+
+
+Visual 1 — KPI Cards (Top Section)
+Add Card visuals for:
+Total Revenue
+Total Orders
+OnTime %
+Avg Delay
+Inventory Turnover
+Visualizations → Card
+
+Visual 2 — Revenue Trend
+Visual: Line Chart
+Axis → OrderDate
+Values → Total Revenue
+
+Visual 3 — Delivery Status
+Visual: Pie Chart
+Legend → DeliveryStatus
+Values → Count of OrderID
+
+Visual 4 — Warehouse Performance
+Visual: Bar Chart
+Axis → WarehouseID
+Values → Avg Delay
+
+Visual 5 — Low Stock Products
+Visual: Table
+Columns:
+ProductID
+WarehouseID
+StockOnHand
+StockStatus
+
+Visual 6 — Slicers (VERY IMPORTANT)
+Add slicers for:
+OrderDate
+WarehouseID
+ProductID
+
+Completed Project
