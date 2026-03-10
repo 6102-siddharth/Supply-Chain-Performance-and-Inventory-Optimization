@@ -50,8 +50,8 @@ Remove Errors / Nulls
 Home → Remove Rows → Remove Blank Rows
 
 Create Calculated Column (Important)
-Add Column → Custom Column
 Formula:
+Add Column → Custom Column
 if [DelayDays] = 0 then "On Time" else "Delayed"
 Name: DeliveryStatus
 Very important KPI column
